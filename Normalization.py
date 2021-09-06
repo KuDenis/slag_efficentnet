@@ -36,13 +36,13 @@ def find_normalization_parameter(PATH, batch_size=8, im_size=350):
         return mean.numpy(), std.numpy()
 
     # Создание трансформации для обучающего набора
-    train_transforms = transforms.Compose([
+    findn_transforms = transforms.Compose([
         transforms.Resize((640, 384)),
         transforms.CenterCrop(300),
         transforms.ToTensor()])
 
     # Загружаем и трансфармируем изображение
-    train_data = torchvision.datasets.ImageFolder(root=PATH, transform=train_transforms)
+    train_data = torchvision.datasets.ImageFolder(root=PATH, transform=findn_transforms)
     train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True)
     mean, std = normalization_parameter(train_loader)
 
@@ -68,7 +68,7 @@ def my_transforms(mean, std, im_size=350):
     norm_transforms = transforms.Normalize(
         mean=-1 * np.divide(mean, std),
         std=1 / std)
-    find_normalization_parameter
+
     return train_transforms, test_transforms, norm_transforms
 
 
@@ -130,12 +130,12 @@ def class_plot(data, encoder, norm_transforms=None, n_figures=12):
     plt.show()
 
 
-def main():
+def main(PATH_train, PATH_test):
     # parameters
     batch_size = 8
     im_size = 350
 
-    # определение параметров нормадизации
+    # определение параметров нормализации
     mean, std = find_normalization_parameter(PATH_train, batch_size, im_size)
 
     train_transforms, test_transforms, norm_transforms = my_transforms(mean, std, im_size)
